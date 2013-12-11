@@ -1,0 +1,316 @@
+FORMAT: 1A
+HOST: http://someurlthat.is.yettobe.decided/api
+
+# GHD Registration Portal
+Registration Portal API.
+
+# Group User
+User related resources of the GHD Registration Portal API.
+All requests other than a sign up request must be authenticated and the user requires the `UserEditor` permission.
+
+## Signup [/signup]
+### Register new user [PUT]
+Creates a new user and issues activation email
+
+This resource has the following attributes
+
+- `email` The email address of the user. Signup will be rejected if an existing user record with a matching email address is found
+- `firstName` The first name of the user
+- `surname` The surname of the user
+- `password` The password used to authenticate the user. The password must be at least 8 characters long and contain at least 2 digits
+- `organisation` The organisation the user belongs to
+
+The 409 response is returned if a user with a matching email address already exists.
+
++ Request (application/json)
+
+            { 
+                "email" : "mickey@disney.com",
+                "firstName" : "Mickey",
+                "surname" : "Mouse",
+                "password" : "plainttextpassword"
+                "organisation" : "Disney"
+            }
+
++ Response 200 (application/hal+json)
+
+            {
+                "_links" : { "self": { "href": "/user/10000000-0000-0000-0000-000000000000" } },
+                "id" : "10000000-0000-0000-0000-000000000000",
+                "email" : "mickey@disney.com",
+                "firstName" : "Mickey",
+                "surname" : "Mouse",
+                "password" : "plainttextpassword"
+                "organisation" : "Disney"
+            }
+
++ Response 409
+
+            {
+                "message" : "The email address mickey@disney.com is already registered. You may try a different email address."
+            }
+
+## User Collection [/user]
+### List Users [GET]
+
+This resource has the following attributes
+
+- `id` The id of the user
+- `name` The name of the user
+- `email` The email address of the user
+- `organisation` The organisation the user belongs to
+
++ Response 200 (application/hal+json)
+
+        [{
+            "_links" : { "self": { "href": "/user/10000000-0000-0000-0000-000000000000" } },
+            "id" : "10000000-0000-0000-0000-000000000000",
+            "name" : "Mickey Mouse",
+            "email" : "mickeyu@disney.com",
+            "organisation" : "Disney"
+        }]
+
+### Create user [POST]
+This resource has the following attributes
+
+- `email` The email address of the user
+- `firstName` The first name of the user
+- `surname` The surname of the user
+- `password` The plain text password used to authenticate the user. It must be at least 8 characters long and have at least 2 digits in it
+- `organisation` The organisation the user belongs to
+
++ Request (application/json)
+
+        {
+            "email" : "mickey@disney.com",
+            "firstName" : "Mickey",
+            "surname" : "Mouse",
+            "password" : "plainttextpassword"
+            "organisation" : "Disney"
+        }
+        
++ Response 201
+
+        {
+            "_links" : { "self": { "href": "/user/10000000-0000-0000-0000-000000000000" } },
+            "id" : "10000000-0000-0000-0000-000000000000",
+            "email" : "mickey@disney.com",
+            "firstName" : "Mickey",
+            "surname" : "Mouse",
+            "organisation" : "Disney"
+        }
+
++ Response 409
+        
+        {
+            "message" : "The platform Fancy Platform already exists. Platform names must be unique"
+        }
+
+## User [/user/{id}]
+
+The `User` resource has the following attributes
+
+- `id` The id of the platform
+- `email` The email address of the user
+- `firstName` The first name of the user
+- `surname` The surname of the user
+- `password` The plain text password used to authenticate the user. It must be at least 8 characters long and have at least 2 digits in it
+- `organisation` The organisation the user belongs to
+
++ Model
+    
+    HAL+JSON representation of the platform
+
+    + Body
+    
+            {
+                "_links" : { "self": { "href": "/user/10000000-0000-0000-0000-000000000000" } },
+                "id" : "10000000-0000-0000-0000-000000000000",
+                "email" : "mickey@disney.com",
+                "firstName" : "Mickey",
+                "surname" : "Mouse",
+                "organisation" : "Disney"
+            }
+
+### Get platform [GET]
+
++ Parameters
+    + id (string, required, `10000000-0000-0000-0000-000000000000`) ... The id of the `user` to retrieve (uuid)
+
++ Response 200 (application/hal+json)
+
+    [User][]
+    
++ Response 401
+
++ Response 403
+
+### Update Platform [PUT]
+
++ Parameters
+    + id (string, required, `10000000-0000-0000-0000-000000000000`) ... The id of the `user` to retrieve (uuid)
+
++ Request (application/json)
+
+            {
+                "id" : "10000000-0000-0000-0000-000000000000",
+                "email" : "mickey@disney.com",
+                "firstName" : "Mickey",
+                "surname" : "Mouse",
+                "organisation" : "Disney",
+                "password" : "plaintextpassword"
+            }
+
++ Response 200 (application/hal+json)
+
+    [User][]
+    
++ Response 401
+
++ Response 403
+
+# Group Logon
+Logon related resources of the **GHD Registration Portal API**
+
+## Logon [/logon/{platform}]
+### Authenticate User [POST]
+
+This resource has the following attributes
+
+- `id` The id of the user
+- `name` The name of the user
+
+If platform is not specified then `platformtoken` and `iv` are not returned in the response.
+
++ Parameters
+    + platform (string, optional, `pivot`) ... The name of the `platform` this authentication is being performed for
+    
++ Request (application/json)
+
+        { "email": "useremail@example.com", "password": "userspassword" }
+
++ Response 200 (application/hal+json)
+    
+        {
+            "_links" : {
+                "self": { "href": "/user/10000000-0000-0000-0000-000000000000" }
+            },
+            "id" : "10000000-0000-0000-0000-000000000000",
+            "name" : "Jessica Alba",
+            "platformtoken" : "Base64EncodedToken",
+            "iv" : "Base64EncodedIV"
+        }
+
++ Response 403 (application/json)
+
+        {
+            "message" : "The credentials entered are not valid"
+        }
+        
+# Group Platform
+Platform related resources of the GHD Registration Portal API.
+All requests must be authenticated and the user requires the `PlatformEditor` permission.
+
+## Platform Collection [/platform]
+
+### List platforms [GET]
+This resource has the following attributes
+
+- `id` The id of the platform
+- `name` The name of the platform
+
++ Response 200 (application/hal+json)
+
+        [{
+            "_links" : { "self": { "href": "/platform/10000000-0000-0000-0000-000000000000" } },
+            "id" : "10000000-0000-0000-0000-000000000000",
+            "name" : "GHD Pivot"
+        }]
+        
+### Create platform [POST]
+This resource has the following attributes
+
+- `name` The name of the platform
+- `entryUri` The front door of the platform
+- `updateUri` The uri at which to push user updates
+
++ Request (application/json)
+
+        {
+            "name" : "Fancy Platform",
+            "entryUri": "https://fancyplatform.com/",
+            "updateUri": "https://fancyplatform.com/updateendpoint"
+        }
+        
++ Response 201
+
+        {
+            "id" : "10000000-0000-0000-0000-000000000000",
+            "name" : "Fancy Platform",
+            "entryUri": "https://fancyplatform.com/",
+            "updateUri": "https://fancyplatform.com/updateendpoint"
+        }
+
++ Response 409
+        
+        {
+            "message" : "The platform Fancy Platform already exists. Platform names must be unique"
+        }
+
+## Platform [/platform/{id}]
+
+The `Platform` resource has the following attributes
+
+- `id` The id of the platform
+- `name` The name of the platform
+- `entryUri` The front door of the platform
+- `updateUri` The uri at which to push user updates
+
++ Model
+    
+    HAL+JSON representation of the platform
+
+    + Body
+    
+            {
+                "_links" : { "self": { "href": "/platform/10000000-0000-0000-0000-000000000000" } },
+                "id" : "10000000-0000-0000-0000-000000000000",
+                "name" : "GHD Pivot",
+                "entryUri" : "https://ghd.pivot/",
+                "updateUri": "https://ghd.pivot/updateendpoint"
+            }
+
+### Get platform [GET]
+
++ Parameters
+    + id (string, required, `10000000-0000-0000-0000-000000000000`) ... The id of the `platform` to retrieve (uuid)
+
++ Response 200 (application/hal+json)
+
+    [Platform][]
+    
++ Response 401
+
++ Response 403
+
+### Update Platform [PUT]
+
++ Parameters
+    + id (string, required, `10000000-0000-0000-0000-000000000000`) ... The id of the `platform` to retrieve (uuid)
+
++ Request (application/json)
+
+            {
+                "id" : "10000000-0000-0000-0000-000000000000",
+                "name" : "GHD Pivot",
+                "entryUri" : "https://ghd.pivot/",
+                "updateUri": "https://ghd.pivot/updateendpoint"
+            }
+
++ Response 200 (application/hal+json)
+
+    [Platform][]
+    
++ Response 401
+
++ Response 403
