@@ -132,7 +132,7 @@ The `User` resource has the following attributes
                 "organisation" : "Disney"
             }
 
-### Get platform [GET]
+### Get User [GET]
 
 + Parameters
     + id (string, required, `10000000-0000-0000-0000-000000000000`) ... The id of the `user` to retrieve (uuid)
@@ -145,7 +145,7 @@ The `User` resource has the following attributes
 
 + Response 403
 
-### Update Platform [PUT]
+### Update User [PUT]
 
 + Parameters
     + id (string, required, `10000000-0000-0000-0000-000000000000`) ... The id of the `user` to retrieve (uuid)
@@ -168,6 +168,48 @@ The `User` resource has the following attributes
 + Response 401
 
 + Response 403
+
+## Secure User Update [/user/{platform/{iv}]
+### Secure Update [PUT]
+The body of this request should be the user data in json format, resembling 
+
+```
+{
+    "id" : "10000000-0000-0000-0000-000000000000",
+    "email" : "mickey@disney.com",
+    "firstName" : "Mickey",
+    "surname" : "Mouse",
+    "password: "plaintextpassword",
+    "organisation" : "Disney"
+}
+```
+
+`password` is optional.
+
+That json structure should be encrypted with the pre shared platform key
+
++ Parameters
+    + platform (string, required, `pivot`) ... The name of the `platform` this update is being performed for
+    + iv (string, required) ... The initialisation vector used to encrypt the body. This should be a base 64 string escaped with `Uri.EscapeDataString`
+
++ Request
+
+            EncryptedData
+
++ Response 200
+
+            {
+                "_links" : { "self": { "href": "/user/10000000-0000-0000-0000-000000000000" } },
+                "id" : "10000000-0000-0000-0000-000000000000",
+                "email" : "mickey@disney.com",
+                "firstName" : "Mickey",
+                "surname" : "Mouse",
+                "organisation" : "Disney"
+            }
+
++ Response 404
+
+            { "message" : "The platform does not exist" }
 
 # Group Logon
 Logon related resources of the **GHD Registration Portal API**
