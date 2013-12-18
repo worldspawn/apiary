@@ -175,8 +175,8 @@ The body of this request should be the user data in json format, resembling
 
 ```
 {
-    "id" : "10000000-0000-0000-0000-000000000000",
-    "email" : "mickey@disney.com",
+    "username" : "mickey@disney.com",
+    "previousUsername" : "mickey@disney.com",
     "firstName" : "Mickey",
     "surname" : "Mouse",
     "password: "plaintextpassword",
@@ -184,7 +184,7 @@ The body of this request should be the user data in json format, resembling
 }
 ```
 
-`password` is optional.
+`password` is optional. If the `username` has not changed the `previousUsername` should match the `username`.
 
 That json structure should be encrypted with the pre shared platform key
 
