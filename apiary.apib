@@ -169,7 +169,8 @@ The `User` resource has the following attributes
 
 + Response 403
 
-## Secure User Update [/user/{platform}/{iv}]
+## Secure User Maintenance [/user/{platform}/{iv}]
+
 ### Secure Update [PUT]
 The body of this request should be the user data in json format, resembling 
 
@@ -195,8 +196,8 @@ That json structure should be encrypted with the pre shared platform key
 + Request
 
             EncryptedData
-
-+ Response 200
+            
++ Response 200 (application/hal+json)
 
             {
                 "_links" : { "self": { "href": "/user/10000000-0000-0000-0000-000000000000" } },
@@ -207,9 +208,15 @@ That json structure should be encrypted with the pre shared platform key
                 "organisation" : "Disney"
             }
 
-+ Response 404
++ Response 404 (application/json)
 
             { "message" : "The platform does not exist" }
+            or
+            { "message" : "This user does not exist" }
+
++ Response 409 (application/json)
+
+            { "message" : "An account with that username already exists" }
 
 # Group Logon
 Logon related resources of the **GHD Registration Portal API**
