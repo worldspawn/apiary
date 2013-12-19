@@ -190,10 +190,10 @@ The body of this request should be the user data in json format, resembling
 That json structure should be encrypted with the pre shared platform key
 
 + Parameters
-    + platform (string, required, `pivot`) ... The name of the `platform` this update is being performed for
-    + iv (string, required) ... The initialisation vector used to encrypt the body. This should be a base 64 string escaped with `Uri.EscapeDataString`
+    + platform (string, required, `market_place`) ... The name of the `platform` this update is being performed for
+    + iv (string, required) ... The initialisation vector used to encrypt the body. This should be encoded with HttpServerUtility.UrlTokenEncode 
 
-+ Request
++ Request (text/plain)
 
             EncryptedData
             
