@@ -187,7 +187,7 @@ The body of this request should be the user data in json format, resembling
 
 `password` is optional *if* the user already exists. If the `username` has not changed the `previousUsername` should match the `username`.
 
-That json structure should be encrypted with the pre shared platform key
+That json structure (the entire blob) should be encrypted with the pre shared platform key sent in Base 64
 
 + Parameters
     + platform (string, required, `market_place`) ... The name of the `platform` this update is being performed for
