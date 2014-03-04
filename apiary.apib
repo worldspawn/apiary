@@ -365,3 +365,41 @@ The `Platform` resource has the following attributes
 + Response 401
 
 + Response 403
+
+# Group Single Sign On
+Single Sign On related resources of the **GHD Registration Portal API**
+
+## Single Sign On [/login/{return}/{iv}]
+### Authenticate User [POST]
+
+This resource has the following attributes
+
+- `id` The id of the user
+- `name` The name of the user
+
+If platform is not specified then `platformtoken` and `iv` are not returned in the response.
+
++ Parameters
+    + platform (string, optional, `pivot`) ... The name of the `platform` this authentication is being performed for
+    
++ Request (application/json)
+
+        { "email": "useremail@example.com", "password": "userspassword" }
+
++ Response 200 (application/hal+json)
+    
+        {
+            "_links" : {
+                "self": { "href": "/user/10000000-0000-0000-0000-000000000000" }
+            },
+            "id" : "10000000-0000-0000-0000-000000000000",
+            "name" : "Jessica Alba",
+            "platformtoken" : "Base64EncodedToken",
+            "iv" : "Base64EncodedIV"
+        }
+
++ Response 403 (application/json)
+
+        {
+            "message" : "The credentials entered are not valid"
+        }
