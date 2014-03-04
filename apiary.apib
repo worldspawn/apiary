@@ -370,12 +370,12 @@ The `Platform` resource has the following attributes
 Single Sign On related resources of the **GHD Registration Portal API**
 
 ## Single Sign On [/login/{return}/{iv}]
-### Authenticate User [GET]
+### Sign In User [GET]
 
 This resource has the following attributes
 
-- `id` The id of the user
-- `name` The name of the user
+- `return` The return url that the SSO site should
+- `iv` The name of the user
 
 If platform is not specified then `platformtoken` and `iv` are not returned in the response.
 
